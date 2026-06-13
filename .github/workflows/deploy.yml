@@ -10,18 +10,14 @@ env:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node 24
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
@@ -37,20 +33,17 @@ jobs:
           VITE_KITE_REDIRECT_URL: ${{ secrets.VITE_KITE_REDIRECT_URL }}
         run: npm run build
 
-      - name: Show dist contents
-        run: |
-          echo "=== dist folder ==="
-          ls -la dist/
-          echo "=== dist/assets ==="
-          ls -la dist/assets/ || echo "no assets folder"
-
       - name: Add nojekyll
         run: touch dist/.nojekyll
 
-      - name: Deploy to gh-pages branch
+      - name: Add CNAME workaround
+        run: echo "" > dist/.nojekyll
+
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           publish_branch: gh-pages
           force_orphan: true
+          enable_jekyll: false
