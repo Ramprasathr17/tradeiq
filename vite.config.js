@@ -2,8 +2,9 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
-  plugins: [react()],
-  // Change '/tradeiq/' to '/' if using a custom domain or root deployment
+  plugins: [react({
+    include: ['**/*.jsx', '**/*.js'],
+  })],
   base: '/tradeiq/',
   build: {
     outDir: 'dist',
