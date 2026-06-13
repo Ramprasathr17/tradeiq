@@ -25,16 +25,16 @@ const COURSES={
   ],
 }
 const GLOSSARY=[
-  {term:'ATM',def:'At The Money — strike equals current spot price.'},
-  {term:'OTM',def:'Out of The Money — no intrinsic value; CE above spot, PE below spot.'},
-  {term:'ITM',def:'In The Money — has intrinsic value; CE below spot, PE above spot.'},
-  {term:'IV', def:'Implied Volatility — market's expectation of future movement, priced into premiums.'},
-  {term:'Theta',def:'Time decay — rate at which an option loses value as expiry approaches.'},
-  {term:'Delta',def:'Rate of change of option price per ₹1 move in underlying. Range: 0 to ±1.'},
-  {term:'PCR',def:'Put-Call Ratio — high PCR (>1.2) is bullish; low PCR (<0.7) is bearish.'},
-  {term:'OI', def:'Open Interest — total outstanding option contracts in the market.'},
-  {term:'Max Pain',def:'Strike where most options expire worthless — acts as expiry magnet.'},
-  {term:'Gamma',def:'Rate of change of Delta per ₹1 move. High near ATM, especially near expiry.'},
+  {term:'ATM', def:"At The Money — strike equals current spot price."},
+  {term:'OTM', def:"Out of The Money — no intrinsic value; CE above spot, PE below spot."},
+  {term:'ITM', def:"In The Money — has intrinsic value; CE below spot, PE above spot."},
+  {term:'IV',  def:"Implied Volatility — market's expectation of future movement, priced into premiums."},
+  {term:'Theta',def:"Time decay — rate at which an option loses value as expiry approaches."},
+  {term:'Delta',def:"Rate of change of option price per ₹1 move in underlying. Range: 0 to ±1."},
+  {term:'PCR', def:"Put-Call Ratio — high PCR (>1.2) is bullish; low PCR (<0.7) is bearish."},
+  {term:'OI',  def:"Open Interest — total outstanding option contracts in the market."},
+  {term:'Max Pain',def:"Strike where most options expire worthless — acts as expiry magnet."},
+  {term:'Gamma',def:"Rate of change of Delta per ₹1 move. High near ATM, especially near expiry."},
 ]
 
 export function Learning() {
