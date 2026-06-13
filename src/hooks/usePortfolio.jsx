@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { kite, DEMO } from '../lib/kite'
 import { getHoldings, getPositions, getSnapshots, upsertHoldings, upsertPositions } from '../lib/supabase'
-import { useAuth } from './useAuth'
+import { useAuth } from './useAuth.jsx'
 import toast from 'react-hot-toast'
 
 export function usePortfolio() {

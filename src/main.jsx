@@ -7,13 +7,13 @@ import App from './App'
 import './styles/global.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <BrowserRouter basename="/tradeiq">
-      <AuthProvider>
-        <App />
-        <Toaster
-          position="bottom-right"
-          toastOptions={{
+  React.createElement(React.StrictMode, null,
+    React.createElement(BrowserRouter, { basename: '/tradeiq' },
+      React.createElement(AuthProvider, null,
+        React.createElement(App, null),
+        React.createElement(Toaster, {
+          position: 'bottom-right',
+          toastOptions: {
             duration: 3500,
             style: {
               background: '#171b26',
@@ -24,10 +24,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               borderRadius: '10px',
             },
             success: { iconTheme: { primary: '#00d4aa', secondary: '#000' } },
-            error:   { iconTheme: { primary: '#ff4d6d', secondary: '#fff' } },
-          }}
-        />
-      </AuthProvider>
-    </BrowserRouter>
-  </React.StrictMode>
+            error: { iconTheme: { primary: '#ff4d6d', secondary: '#fff' } },
+          }
+        })
+      )
+    )
+  )
 )
