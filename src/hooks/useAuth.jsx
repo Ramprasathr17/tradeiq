@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, useCallback } from 'react'
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react'
 import { supabase, exchangeKiteToken, signOut, signInWithEmail, signUpWithEmail } from '../lib/supabase'
 import { kite, DEMO } from '../lib/kite'
 import toast from 'react-hot-toast'
@@ -6,9 +6,9 @@ import toast from 'react-hot-toast'
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-  const [supaUser, setSupaUser]       = useState(null)
-  const [kiteUser, setKiteUser]       = useState(null)
-  const [isDemo, setIsDemo]           = useState(false)
+  const [supaUser,    setSupaUser]    = useState(null)
+  const [kiteUser,    setKiteUser]    = useState(null)
+  const [isDemo,      setIsDemo]      = useState(false)
   const [authLoading, setAuthLoading] = useState(true)
 
   useEffect(() => {
@@ -73,22 +73,24 @@ export function AuthProvider({ children }) {
 
   const isAuthenticated = isDemo || !!kiteUser || !!supaUser
 
-  const value = {
-    supaUser,
-    kiteUser,
-    isDemo,
-    authLoading,
-    isAuthenticated,
-    userId: supaUser?.id || null,
-    loginEmail,
-    signupEmail,
-    loginKite,
-    handleKiteCallback,
-    enableDemo,
-    logout,
-  }
-
-  return AuthContext.Provider({ value, children })
+  return (
+    <AuthContext.Provider value={{
+      supaUser,
+      kiteUser,
+      isDemo,
+      authLoading,
+      isAuthenticated,
+      userId: supaUser?.id || null,
+      loginEmail,
+      signupEmail,
+      loginKite,
+      handleKiteCallback,
+      enableDemo,
+      logout,
+    }}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
 export const useAuth = () => useContext(AuthContext)
