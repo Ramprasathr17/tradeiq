@@ -5,7 +5,7 @@ import { useAuth } from './useAuth'
 import toast from 'react-hot-toast'
 
 export function usePortfolio() {
-  const { isDemo, userId, isAuthenticated, kiteUser } = useAuth()
+  const { isDemo, userId, isAuthenticated } = useAuth()
   const [holdings,  setHoldings]  = useState([])
   const [positions, setPositions] = useState([])
   const [margins,   setMargins]   = useState(null)
@@ -14,20 +14,17 @@ export function usePortfolio() {
   const [lastSync,  setLastSync]  = useState(null)
   const pollRef = useRef(null)
 
-  // ── Computed stats ─────────────────────────────────────────────
   const stats = {
-    totalInvested:  holdings.reduce((s,h) => s + h.average_price * Math.abs(h.quantity||0), 0),
-    totalCurrent:   holdings.reduce((s,h) => s + h.last_price   * Math.abs(h.quantity||0), 0),
-    totalPnl:       holdings.reduce((s,h) => s + (h.pnl||0), 0),
-    optionsPnl:     positions.reduce((s,p) => s + (p.pnl||0), 0),
-    dayPnl:         holdings.reduce((s,h) => s + (h.day_change_percentage||0) * h.last_price * Math.abs(h.quantity||0) / 100, 0),
-    openPositions:  positions.filter(p => p.quantity !== 0).length,
-    marginUsed:     margins?.equity?.used || 0,
-    marginAvail:    margins?.equity?.available || 0,
-    marginNet:      margins?.equity?.net || 0,
+    totalInvested: holdings.reduce((s,h) => s + h.average_price * Math.abs(h.quantity||0), 0),
+    totalCurrent:  holdings.reduce((s,h) => s + h.last_price   * Math.abs(h.quantity||0), 0),
+    totalPnl:      holdings.reduce((s,h) => s + (h.pnl||0), 0),
+    optionsPnl:    positions.reduce((s,p) => s + (p.pnl||0), 0),
+    openPositions: positions.filter(p => p.quantity !== 0).length,
+    marginUsed:    margins?.equity?.used || 0,
+    marginAvail:   margins?.equity?.available || 0,
+    marginNet:     margins?.equity?.net || 0,
   }
 
-  // ── Fetch from Kite (live) ─────────────────────────────────────
   const fetchLive = useCallback(async () => {
     if (!isAuthenticated) return
     setLoading(true)
@@ -55,7 +52,6 @@ export function usePortfolio() {
       setMargins(mar)
       setLastSync(new Date())
 
-      // Persist to Supabase (best-effort)
       if (userId) {
         await Promise.all([
           upsertHoldings(userId, h || []),
@@ -65,7 +61,6 @@ export function usePortfolio() {
         setSnapshots(snaps)
       }
     } catch (err) {
-      // Fall back to Supabase cache
       if (userId) {
         try {
           const [h, pos, snaps] = await Promise.all([
@@ -73,9 +68,13 @@ export function usePortfolio() {
             getPositions(userId),
             getSnapshots(userId, 30),
           ])
-          setHoldings(h); setPositions(pos); setSnapshots(snaps)
+          setHoldings(h)
+          setPositions(pos)
+          setSnapshots(snaps)
           toast.error('Live fetch failed — showing cached data')
-        } catch (_) { toast.error('Could not load portfolio') }
+        } catch (_) {
+          toast.error('Could not load portfolio')
+        }
       } else {
         toast.error('Failed: ' + err.message)
       }
@@ -84,7 +83,6 @@ export function usePortfolio() {
     }
   }, [isAuthenticated, isDemo, userId])
 
-  // ── Load cached data from Supabase on mount ────────────────────
   const loadCached = useCallback(async () => {
     if (!userId || isDemo) return
     try {
@@ -99,7 +97,6 @@ export function usePortfolio() {
     } catch (_) {}
   }, [userId, isDemo])
 
-  // ── Poll every 60s during market hours ────────────────────────
   useEffect(() => {
     loadCached().then(fetchLive)
 
