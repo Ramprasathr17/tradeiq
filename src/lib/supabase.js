@@ -25,12 +25,17 @@ export const signInAnon = () => supabase.auth.signInAnonymously()
 export async function exchangeKiteToken(request_token, api_key) {
   const res = await fetch(`${EDGE_URL}/kite-session`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON },
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_ANON,
+      'Authorization': `Bearer ${SUPABASE_ANON}`,
+    },
     body: JSON.stringify({ request_token, api_key }),
   })
+
   const data = await res.json()
-  if (!res.ok) throw new Error(data.error || 'Token exchange failed')
-  return data // { access_token, user }
+  if (!res.ok) throw new Error(data.error || data.message || 'Token exchange failed')
+  return data
 }
 
 // ── Kite API Proxy (via Supabase Edge Function) ────────────────────
@@ -39,16 +44,19 @@ export async function kiteProxyFetch(path, kiteToken, options = {}) {
     ...options,
     headers: {
       'apikey': SUPABASE_ANON,
+      'Authorization': `Bearer ${SUPABASE_ANON}`,
       'x-kite-token': kiteToken,
       'Content-Type': 'application/json',
       ...options.headers,
     },
   })
-  if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e.message || `Error ${res.status}`) }
+  if (!res.ok) {
+    const e = await res.json().catch(() => ({}))
+    throw new Error(e.message || `Error ${res.status}`)
+  }
   const json = await res.json()
   return json.data ?? json
 }
-
 // ── Holdings ───────────────────────────────────────────────────────
 export const getHoldings = async (userId) => {
   const { data, error } = await supabase.from('holdings').select('*')
