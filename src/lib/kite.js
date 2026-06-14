@@ -5,7 +5,7 @@
 import { kiteProxyFetch } from './supabase'
 
 const API_KEY = import.meta.env.VITE_KITE_API_KEY || ''
-const REDIRECT = import.meta.env.VITE_KITE_REDIRECT_URL || `${window.location.origin}/auth/callback`
+const REDIRECT = import.meta.env.VITE_KITE_REDIRECT_URL || `${window.location.origin}/tradeiq/`
 
 const TOKEN_KEY = 'kite_access_token'
 const USER_KEY  = 'kite_user'
